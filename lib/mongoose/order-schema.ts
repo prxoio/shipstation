@@ -1,6 +1,7 @@
-import mongoose from 'mongoose';
+import { IOrder } from '@/interfaces/IOrder';
+import mongoose, { Schema } from 'mongoose';
 
-const MoneySetSchema = new mongoose.Schema({
+const MoneySetSchema = new Schema({
     shop_money: {
         amount: String,
         currency_code: String
@@ -11,7 +12,7 @@ const MoneySetSchema = new mongoose.Schema({
     }
 });
 
-const ClientDetailsSchema = new mongoose.Schema({
+const ClientDetailsSchema = new Schema({
     accept_language: String,
     browser_height: Number,
     browser_ip: String,
@@ -20,7 +21,7 @@ const ClientDetailsSchema = new mongoose.Schema({
     user_agent: String
 });
 
-const AddressSchema = new mongoose.Schema({
+const AddressSchema = new Schema({
     first_name: String,
     address1: String,
     phone: String,
@@ -38,7 +39,7 @@ const AddressSchema = new mongoose.Schema({
     province_code: String
 });
 
-const CustomerSchema = new mongoose.Schema({
+const CustomerSchema = new Schema({
     id: Number,
     email: String,
     created_at: String,
@@ -60,7 +61,7 @@ const CustomerSchema = new mongoose.Schema({
     default_address: AddressSchema
 });
 
-const LineItemSchema = new mongoose.Schema({
+const LineItemSchema = new Schema({
     id: Number,
     admin_graphql_api_id: String,
     attributed_staffs: [String],
@@ -92,7 +93,7 @@ const LineItemSchema = new mongoose.Schema({
     discount_allocations: [String]
 });
 
- const OrderSchema = new mongoose.Schema({
+ const OrderSchema = new Schema({
     id: Number,
     storeName: { type: String, required: true },
     admin_graphql_api_id: String,
@@ -184,6 +185,6 @@ const LineItemSchema = new mongoose.Schema({
     shipping_lines: [String]
 });
 
-const Order = mongoose.model('Order', OrderSchema);
+const Order = mongoose.models.Order || mongoose.model('Order', OrderSchema);
 
-export { OrderSchema, Order };
+export { Order };

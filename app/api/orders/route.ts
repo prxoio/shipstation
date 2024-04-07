@@ -1,6 +1,6 @@
 // pages/api/orders.ts
 import dbConnect from '@/lib/mongodb';
-import { Order } from '@/lib/mongoose/order-schema'; // Corrected import for Order model
+import { Order } from '@/lib/mongoose/order-schema'; // Import the Order model
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -17,8 +17,8 @@ export async function GET(request: NextRequest) {
             });
         }
 
-        // Query orders by store name directly using the Order model
-        const orders = await Order.find({ storeName: storeName });
+        // Now, directly query orders by store name using the Order model
+        const orders = await Order.find({ storeName });
         return new NextResponse(JSON.stringify(orders), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
