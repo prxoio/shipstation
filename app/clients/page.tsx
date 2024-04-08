@@ -30,11 +30,17 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { IOrder } from '@/interfaces/IOrder'
 import { EditClient } from '@/components/dashboard/edit-client'
 import Link from 'next/link'
+import { auth } from '@/lib/firebase'
 
+interface Clients {
+  businessName: string
+  url: string
+  uid: string
+}
 export default function Dashboard() {
   const [currentOrder, setCurrentOrder] = useState<IOrder | null>(null)
 
@@ -44,6 +50,44 @@ export default function Dashboard() {
     console.log('Orders in parent component:', order)
   }, [])
 
+  const [refresh, setRefresh] = useState(0)
+  const [clients, setClients] = useState<Clients[] | null>(null)
+  const uid = auth.currentUser?.uid // Get the current user's UID
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await fetch(`/api/clients/get?uid=${uid}`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch clients')
+        }
+        const data = await response.json()
+        setClients(data) // Update state with fetched clients
+      } catch (error: any) {
+        console.error(error.message)
+        // Optionally, handle errors in state/UI as needed
+      }
+    }
+
+    fetchClients()
+  }, [uid, refresh]) // Dependency array ensures this effect runs when `uid` changes
+
+  const deleteClient = async (uid: string | number | boolean, url: string | number | boolean) => {
+    try {
+      const response = await fetch(`/api/clients/delete?uid=${encodeURIComponent(uid)}&url=${encodeURIComponent(url)}`, {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+      console.log(data);
+      setRefresh((prev) => prev + 1);
+      // Handle response data...
+    } catch (error) {
+      console.error("Failed to delete client:", error);
+      // Handle error...
+    }
+  };
+
+  
   return (
     <main className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>
       <Tabs defaultValue='all'>
@@ -106,13 +150,10 @@ export default function Dashboard() {
                       <span className='sr-only'>Image</span>
                     </TableHead>
                     <TableHead>Name</TableHead>
+                    <TableHead className='hidden md:table-cell'>URL</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className='hidden md:table-cell'>Price</TableHead>
                     <TableHead className='hidden md:table-cell'>
-                      Total Sales
-                    </TableHead>
-                    <TableHead className='hidden md:table-cell'>
-                      Created at
+                      Total Orders
                     </TableHead>
                     <TableHead>
                       <span className='sr-only'>Actions</span>
@@ -120,232 +161,57 @@ export default function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell className='hidden sm:table-cell'>
-                      <Image
-                        alt='Product image'
-                        className='aspect-square rounded-md object-cover'
-                        height='64'
-                        src='/placeholder.svg'
-                        width='64'
-                      />
-                    </TableCell>
-                    <TableCell className='font-medium'>
-                      Laser Lemonade Machine
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant='outline'>Draft</Badge>
-                    </TableCell>
-                    <TableCell className='hidden md:table-cell'>$499.99</TableCell>
-                    <TableCell className='hidden md:table-cell'>25</TableCell>
-                    <TableCell className='hidden md:table-cell'>
-                      2023-07-12 10:42 AM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup='true' size='icon' variant='ghost'>
-                            <MoreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='hidden sm:table-cell'>
-                      <Image
-                        alt='Product image'
-                        className='aspect-square rounded-md object-cover'
-                        height='64'
-                        src='/placeholder.svg'
-                        width='64'
-                      />
-                    </TableCell>
-                    <TableCell className='font-medium'>
-                      Hypernova Headphones
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant='outline'>Active</Badge>
-                    </TableCell>
-                    <TableCell className='hidden md:table-cell'>$129.99</TableCell>
-                    <TableCell className='hidden md:table-cell'>100</TableCell>
-                    <TableCell className='hidden md:table-cell'>
-                      2023-10-18 03:21 PM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup='true' size='icon' variant='ghost'>
-                            <MoreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='hidden sm:table-cell'>
-                      <Image
-                        alt='Product image'
-                        className='aspect-square rounded-md object-cover'
-                        height='64'
-                        src='/placeholder.svg'
-                        width='64'
-                      />
-                    </TableCell>
-                    <TableCell className='font-medium'>AeroGlow Desk Lamp</TableCell>
-                    <TableCell>
-                      <Badge variant='outline'>Active</Badge>
-                    </TableCell>
-                    <TableCell className='hidden md:table-cell'>$39.99</TableCell>
-                    <TableCell className='hidden md:table-cell'>50</TableCell>
-                    <TableCell className='hidden md:table-cell'>
-                      2023-11-29 08:15 AM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup='true' size='icon' variant='ghost'>
-                            <MoreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='hidden sm:table-cell'>
-                      <Image
-                        alt='Product image'
-                        className='aspect-square rounded-md object-cover'
-                        height='64'
-                        src='/placeholder.svg'
-                        width='64'
-                      />
-                    </TableCell>
-                    <TableCell className='font-medium'>
-                      TechTonic Energy Drink
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant='secondary'>Draft</Badge>
-                    </TableCell>
-                    <TableCell className='hidden md:table-cell'>$2.99</TableCell>
-                    <TableCell className='hidden md:table-cell'>0</TableCell>
-                    <TableCell className='hidden md:table-cell'>
-                      2023-12-25 11:59 PM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup='true' size='icon' variant='ghost'>
-                            <MoreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='hidden sm:table-cell'>
-                      <Image
-                        alt='Product image'
-                        className='aspect-square rounded-md object-cover'
-                        height='64'
-                        src='/placeholder.svg'
-                        width='64'
-                      />
-                    </TableCell>
-                    <TableCell className='font-medium'>
-                      Gamer Gear Pro Controller
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant='outline'>Active</Badge>
-                    </TableCell>
-                    <TableCell className='hidden md:table-cell'>$59.99</TableCell>
-                    <TableCell className='hidden md:table-cell'>75</TableCell>
-                    <TableCell className='hidden md:table-cell'>
-                      2024-01-01 12:00 AM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup='true' size='icon' variant='ghost'>
-                            <MoreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className='hidden sm:table-cell'>
-                      <Image
-                        alt='Product image'
-                        className='aspect-square rounded-md object-cover'
-                        height='64'
-                        src='/placeholder.svg'
-                        width='64'
-                      />
-                    </TableCell>
-                    <TableCell className='font-medium'>
-                      Luminous VR Headset
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant='outline'>Active</Badge>
-                    </TableCell>
-                    <TableCell className='hidden md:table-cell'>$199.99</TableCell>
-                    <TableCell className='hidden md:table-cell'>30</TableCell>
-                    <TableCell className='hidden md:table-cell'>
-                      2024-02-14 02:14 PM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup='true' size='icon' variant='ghost'>
-                            <MoreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
+                  {clients &&
+                    clients.map((client) => (
+                      <TableRow key={client.url}>
+                        <TableCell className='hidden sm:table-cell'>
+                          <Image
+                            alt='Client image'
+                            className='aspect-square rounded-md object-cover'
+                            height='64'
+                            src='/avatar.jpeg'
+                            width='64'
+                          />
+                        </TableCell>
+                        <TableCell className='font-medium'>
+                          {client.businessName}
+                        </TableCell>
+
+                        <TableCell className='hidden md:table-cell'>
+                          {client.url}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant='outline'>Active</Badge>
+                        </TableCell>
+                        <TableCell className='hidden md:table-cell'>4</TableCell>
+
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                aria-haspopup='true'
+                                size='icon'
+                                variant='ghost'
+                              >
+                                <MoreHorizontal className='h-4 w-4' />
+                                <span className='sr-only'>Toggle menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align='end'>
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem>Edit</DropdownMenuItem>
+                              <DropdownMenuItem onSelect={() => deleteClient(client.uid, client.url)}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </CardContent>
             <CardFooter>
               <div className='text-xs text-muted-foreground'>
-                Showing <strong>1-10</strong> of <strong>32</strong> products
+                Showing <strong>x</strong> of <strong>x</strong> clients
               </div>
             </CardFooter>
           </Card>

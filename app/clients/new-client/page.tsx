@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import { ChevronLeft, PlusCircle, Upload } from 'lucide-react'
 
@@ -31,8 +33,63 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import Link from 'next/link'
+import { Switch } from '@/components/ui/switch'
+import { SwitchForm } from '@/components/catch-all'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { auth } from '@/lib/firebase'
 
 export default function NewClient() {
+  const [businessName, setBusinessName] = useState('')
+  const [url, setUrl] = useState('')
+  const [uid, setUid] = useState(''); // State to hold the Firebase UID
+
+  const router = useRouter()
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        setUid(user.uid);
+      } else {
+        // Redirect or inform the user they are not logged in
+        console.log('No authenticated user. Redirecting...');
+        router.push('/login'); // Adjust the path as necessary
+      }
+    });
+  
+    // Clean up the listener on component unmount
+    return () => unsubscribe();
+  }, [router]);
+
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
+
+    const formData = {
+      uid, // Include the UID in the form data
+      businessName,
+      url,
+    };
+
+    try {
+      const response = await fetch('/api/clients/add', { // Updated to use the new API route
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        router.push('/clients') // Redirect or handle success
+      } else {
+        const errorDetails = await response.text(); // or response.json() if the server responds with JSON
+        console.error('Form submission error:', errorDetails);
+        throw new Error(`Form submission failed: ${errorDetails}`);
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
   return (
     <main className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 mt-8'>
       <div className='mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4'>
@@ -49,50 +106,59 @@ export default function NewClient() {
           <Badge variant='outline' className='ml-auto sm:ml-0'>
             In Progress
           </Badge>
-          <div className='hidden items-center gap-2 md:ml-auto md:flex'>
-            <Button variant='outline' size='sm'>
-              Discard
-            </Button>
-            <Button size='sm'>Save Product</Button>
-          </div>
         </div>
-        <div className='grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8'>
+        <div className='grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-1 lg:gap-8'>
           <div className='grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8'>
-            <Card>
-              <CardHeader>
-                <CardTitle>Store Details</CardTitle>
-                <CardDescription>Enter the client details below</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className='grid gap-6'>
-                  <div className='grid gap-3'>
-                    <Label htmlFor='name'>Business Name</Label>
-                    <Input
-                      id='name'
-                      type='text'
-                      className='w-full'
-                      defaultValue='Shop Name'
-                    />
+            <form onSubmit={handleSubmit}>
+              <Card>
+                {/* Store Details Card */}
+                <CardHeader>
+                  <CardTitle>Store Details</CardTitle>
+                  <CardDescription>Enter the client details below</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className='grid gap-6'>
+                    <div className='grid gap-3'>
+                      <Label htmlFor='name'>Business Name</Label>
+                      <Input
+                        id='name'
+                        type='text'
+                        className='w-full'
+                        value={businessName}
+                        onChange={(e) => setBusinessName(e.target.value)}
+                      />
+                    </div>
+                    <div className='grid gap-3'>
+                      <Label htmlFor='url'>URL (myshopify.com)</Label>
+                      <Input
+                        id='url'
+                        type='text'
+                        className='w-full'
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                      />
+                    </div>
                   </div>
-                  <div className='grid gap-3'>
-                    <Label htmlFor='url'>URL (myshopify.com)</Label>
-                    <Input
-                      id='url'
-                      type='text'
-                      className='w-full'
-                      defaultValue='shopname.myshopify.com'
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
+                </CardContent>
+              </Card>
+              <div className='flex justify-end gap-2 mt-4'>
+                <Button type='submit'>Save Client</Button>
+              </div>
+            </form>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Stock</CardTitle>
-                <CardDescription>
-                  Add the SKUs that you will ship on behalf of this store
-                </CardDescription>
+                <div className='flex justify-between items-center'>
+                  <CardDescription>
+                    Add the SKUs that you will ship on behalf of this store
+                  </CardDescription>
+                  <div className='flex items-center space-x-2'>
+                    <Switch id='airplane-mode' />
+                    <Label htmlFor='airplane-mode'>Catch All</Label>
+                  </div>
+                </div>
               </CardHeader>
+
               <CardContent>
                 <Table>
                   <TableHeader>
@@ -141,62 +207,8 @@ export default function NewClient() {
                   Add Variant
                 </Button>
               </CardFooter>
-            </Card>
+            </Card> */}
           </div>
-          <div className='grid auto-rows-max items-start gap-4 lg:gap-8'>
-            <Card className='py-1'>
-              <CardHeader>
-                <CardTitle>Client Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className='grid gap-6'>
-                  <div className='grid gap-3'>
-                    <Label htmlFor='status'>Status</Label>
-                    <Select>
-                      <SelectTrigger id='status' aria-label='Select status'>
-                        <SelectValue placeholder='Select status' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='published'>Active</SelectItem>
-                        <SelectItem value='archived'>Inactive</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className='overflow-hidden'>
-              <CardHeader>
-                <CardTitle>Store Logo</CardTitle>
-                <CardDescription>
-                  Add the Store Logo. Upload a 200px square (.png, .jpg, .jpeg)
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className='grid gap-2'>
-                  <Image
-                    alt='Product image'
-                    className='aspect-square w-full rounded-md object-cover'
-                    height='300'
-                    src='/avatar.jpeg'
-                    width='300'
-                  />
-                  <div className='flex h-20 mt-4'>
-                    <button className='flex w-full items-center justify-center rounded-md border border-dashed'>
-                      <Upload className='h-4 w-4 text-muted-foreground' />
-                      <span className='sr-only'>Upload</span>
-                    </button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-        <div className='flex items-center justify-center gap-2 md:hidden'>
-          <Button variant='outline' size='sm'>
-            Discard
-          </Button>
-          <Button size='sm'>Save Product</Button>
         </div>
       </div>
     </main>
