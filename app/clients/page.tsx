@@ -35,11 +35,13 @@ import { IOrder } from '@/interfaces/IOrder'
 import { EditClient } from '@/components/dashboard/edit-client'
 import Link from 'next/link'
 import { auth } from '@/lib/firebase'
+import ClientDialog from '@/components/client-dialog'
 
 interface Clients {
   businessName: string
   url: string
   uid: string
+  clientId: string
 }
 export default function Dashboard() {
   const [currentOrder, setCurrentOrder] = useState<IOrder | null>(null)
@@ -72,22 +74,29 @@ export default function Dashboard() {
     fetchClients()
   }, [uid, refresh]) // Dependency array ensures this effect runs when `uid` changes
 
-  const deleteClient = async (uid: string | number | boolean, url: string | number | boolean) => {
+  const deleteClient = async (
+    uid: string | number | boolean,
+    url: string | number | boolean
+  ) => {
     try {
-      const response = await fetch(`/api/clients/delete?uid=${encodeURIComponent(uid)}&url=${encodeURIComponent(url)}`, {
-        method: 'DELETE',
-      });
-      const data = await response.json();
-      console.log(data);
-      setRefresh((prev) => prev + 1);
+      const response = await fetch(
+        `/api/clients/delete?uid=${encodeURIComponent(uid)}&url=${encodeURIComponent(
+          url
+        )}`,
+        {
+          method: 'DELETE',
+        }
+      )
+      const data = await response.json()
+      console.log(data)
+      setRefresh((prev) => prev + 1)
       // Handle response data...
     } catch (error) {
-      console.error("Failed to delete client:", error);
+      console.error('Failed to delete client:', error)
       // Handle error...
     }
-  };
+  }
 
-  
   return (
     <main className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>
       <Tabs defaultValue='all'>
@@ -95,10 +104,7 @@ export default function Dashboard() {
           <TabsList>
             <TabsTrigger value='all'>All</TabsTrigger>
             <TabsTrigger value='active'>Active</TabsTrigger>
-            <TabsTrigger value='draft'>Draft</TabsTrigger>
-            <TabsTrigger value='archived' className='hidden sm:flex'>
-              Archived
-            </TabsTrigger>
+            <TabsTrigger value='draft'>Inactive</TabsTrigger>
           </TabsList>
           <div className='ml-auto flex items-center gap-2'>
             <DropdownMenu>
@@ -158,6 +164,9 @@ export default function Dashboard() {
                     <TableHead>
                       <span className='sr-only'>Actions</span>
                     </TableHead>
+                    <TableHead>
+                      <span className='sr-only'>Activate</span>
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -184,7 +193,14 @@ export default function Dashboard() {
                           <Badge variant='outline'>Active</Badge>
                         </TableCell>
                         <TableCell className='hidden md:table-cell'>4</TableCell>
-
+                        <TableCell>
+                          <ClientDialog
+                            name={client.businessName}
+                            url={client.url}
+                            uid={client.uid}
+                            clientId={client.clientId}
+                          />
+                        </TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -200,7 +216,11 @@ export default function Dashboard() {
                             <DropdownMenuContent align='end'>
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
                               <DropdownMenuItem>Edit</DropdownMenuItem>
-                              <DropdownMenuItem onSelect={() => deleteClient(client.uid, client.url)}>Delete</DropdownMenuItem>
+                              <DropdownMenuItem
+                                onSelect={() => deleteClient(client.uid, client.url)}
+                              >
+                                Delete
+                              </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>

@@ -38,6 +38,7 @@ import { SwitchForm } from '@/components/catch-all'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth } from '@/lib/firebase'
+import { v4 as uuidv4 } from 'uuid';
 
 export default function NewClient() {
   const [businessName, setBusinessName] = useState('')
@@ -64,8 +65,11 @@ export default function NewClient() {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
 
+    const clientId = uuidv4(); // uuid for the client (to use in webhook query)
+
     const formData = {
       uid, // Include the UID in the form data
+      clientId,
       businessName,
       url,
     };

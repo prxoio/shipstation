@@ -10,6 +10,7 @@ dbConnect();
 // Define your Mongoose model outside the handler if it's shared across requests
 const clientSchema = new mongoose.Schema({
   uid: { type: String, required: true },
+  clientId: { type: String, required: true },
   businessName: { type: String, required: true },
   url: { type: String, required: true },
 });
