@@ -13,7 +13,7 @@ const dataSchema = new mongoose.Schema<IData>({
 const Data: Model<IData> =
   mongoose.models.Data || mongoose.model<IData>('Data', dataSchema)
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function GET(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect()
 
   if (req.method === 'GET') {
