@@ -7,18 +7,20 @@ export async function GET(request: NextRequest) {
     await dbConnect();
 
     try {
+        // Construct a URL object from the request URL string
         const url = new URL(request.url);
-        const storeName = url.searchParams.get('storeName');
+        // Extract 'uid' from the query parameters instead of 'storeName'
+        const uid = url.searchParams.get('uid');
 
-        if (!storeName) {
-            return new NextResponse(JSON.stringify({ error: 'Store name must be provided as a query parameter.' }), {
+        if (!uid) {
+            return new NextResponse(JSON.stringify({ error: 'UID must be provided as a query parameter.' }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' },
             });
         }
 
-        // Now, directly query orders by store name using the Order model
-        const orders = await Order.find({ storeName });
+        // Query orders by uid using the Order model
+        const orders = await Order.find({ uid }); // Adjust the field to match your schema if necessary
         return new NextResponse(JSON.stringify(orders), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },

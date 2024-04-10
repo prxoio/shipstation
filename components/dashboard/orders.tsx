@@ -31,24 +31,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useState, useEffect } from 'react'
 import { IOrder } from '@/interfaces/IOrder'
 import { reformatDate, reformatTime, formatCurrency } from '@/components/formatting'
+import { auth } from '@/lib/firebase'
 
 interface OrderTableProps {
-  onOrdersFetched: (order: IOrder) => void;
+  onOrdersFetched: (order: IOrder) => void
+  onOrdersArray: (orders: IOrder[]) => void
 }
 
-export default function OrderTable({ onOrdersFetched }: OrderTableProps) {
+export default function OrderTable({
+  onOrdersFetched,
+  onOrdersArray,
+}: OrderTableProps) {
   const [orders, setOrders] = useState<IOrder[]>([])
   const storeName = 'manufi' // Specify the store name
   const pollingInterval = 5000 // Poll every 5000 milliseconds (5 seconds)
+  const uid = auth?.currentUser?.uid || 'unknown'
 
   useEffect(() => {
     // Define the fetch operation as an async function
     const fetchOrders = async () => {
       try {
-        const response = await fetch(`/api/orders?storeName=${storeName}`)
+        const response = await fetch(`/api/orders?uid=${uid}`)
         if (response.ok) {
           const data = await response.json()
           setOrders(data) // Update the orders state
+          onOrdersArray(data)
           console.log('Fetched orders:', data)
         } else {
           // Handle HTTP errors
@@ -68,12 +75,12 @@ export default function OrderTable({ onOrdersFetched }: OrderTableProps) {
 
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId)
-  }, []); // Include onOrdersFetched in the dependency array
+  }, [uid]) // Include onOrdersFetched in the dependency array
 
   const handleRowClick = (order: IOrder) => {
     // Call the prop function with the selected order
-    onOrdersFetched(order);
-  };
+    onOrdersFetched(order)
+  }
 
   return (
     <Tabs defaultValue='week'>

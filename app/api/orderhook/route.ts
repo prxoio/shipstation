@@ -1,32 +1,51 @@
 // pages/api/webhook.ts
-import dbConnect from '@/lib/mongodb';
-import { Order } from '@/lib/mongoose/order-schema'; // Correct import of the compiled model
-import { NextRequest, NextResponse } from 'next/server';
+import dbConnect from '@/lib/mongodb'
+import { Order } from '@/lib/mongoose/order-schema' // Correct import of the compiled model
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
-  await dbConnect();
+  await dbConnect()
 
   try {
-    const data = await request.json();
+    const data = await request.json()
+    const requestUrl = new URL(request.url)
+    const uid = requestUrl.searchParams.get('uid')
+    const clientId = requestUrl.searchParams.get('client_id')
+
     const url = new URL(data.order_status_url);
     const storeName = url.hostname.split('.')[0]; // Extract 'manufi'
 
-    // Create a new document with the extracted storeName and other data
+    if (!storeName) {
+      // Return an error response if storeName (id) is not provided
+      return new NextResponse(
+        JSON.stringify({ error: 'user (uid) is required' }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    }
+    // Create new document with storeName and order data
     const newOrder = new Order({
       ...data,
       storeName,
-    });
-    await newOrder.save();
+      uid,
+      clientId,
+    })
+    await newOrder.save()
 
-    return new NextResponse(JSON.stringify({ message: 'Order saved successfully' }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new NextResponse(
+      JSON.stringify({ message: 'Order saved successfully' }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    )
   } catch (error) {
-    console.error('Error processing webhook:', error);
+    console.error('Error processing webhook:', error)
     return new NextResponse(JSON.stringify({ error: 'Failed to process webhook' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
-    });
+    })
   }
 }

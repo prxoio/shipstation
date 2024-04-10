@@ -93,6 +93,8 @@ interface LineItem {
 interface IOrder {
     id: number;
     storeName: string;
+    uid: string;
+    clientId: string;
     admin_graphql_api_id: string;
     app_id: number;
     browser_ip: string;

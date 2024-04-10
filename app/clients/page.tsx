@@ -215,7 +215,6 @@ export default function Dashboard() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align='end'>
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
                               <DropdownMenuItem
                                 onSelect={() => deleteClient(client.uid, client.url)}
                               >

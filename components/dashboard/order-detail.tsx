@@ -32,12 +32,15 @@ import { Separator } from '@/components/ui/separator'
 import { IOrder } from '@/interfaces/IOrder'
 import { formatCurrency, reformatDate } from '@/components/formatting'
 import Link from 'next/link'
+import PdfGeneratorComponent from '../pdf/GeneratePDFPostageLabel'
 
 interface OrderDetailProps {
   order: IOrder | null
 }
 
 export default function OrderDetail({ order }: OrderDetailProps) {
+  const todayDate = new Date().toISOString().split('T')[0]
+
   return (
     <Card className='overflow-hidden'>
       <CardHeader className='flex flex-row items-start bg-muted/50'>
@@ -69,6 +72,7 @@ export default function OrderDetail({ order }: OrderDetailProps) {
               </Link>
             )}
           </Button>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size='icon' variant='outline' className='h-8 w-8'>
@@ -217,26 +221,36 @@ export default function OrderDetail({ order }: OrderDetailProps) {
           </div>
         </CardContent>
       )}
-      <CardFooter className='flex flex-row items-center border-t bg-muted/50 px-6 py-3'>
+      <CardFooter className='flex justify-between flex-row items-center border-t bg-muted/50 px-6 py-3'>
         <div className='text-xs text-muted-foreground'>
           Updated <time dateTime='2023-11-23'>Just Now</time>
         </div>
-        <Pagination className='ml-auto mr-0 w-auto'>
-          <PaginationContent>
-            <PaginationItem>
-              <Button size='icon' variant='outline' className='h-6 w-6'>
-                <ChevronLeft className='h-3.5 w-3.5' />
-                <span className='sr-only'>Previous Order</span>
-              </Button>
-            </PaginationItem>
-            <PaginationItem>
-              <Button size='icon' variant='outline' className='h-6 w-6'>
-                <ChevronRight className='h-3.5 w-3.5' />
-                <span className='sr-only'>Next Order</span>
-              </Button>
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+
+        {order && (
+          <PdfGeneratorComponent
+            postcode={order.shipping_address.zip || 'XX01 1XX'}
+            courierType={'PRIVATE COURIER'}
+            shippingUnits={'1'}
+            address={
+              `${order.shipping_address.first_name || ''} ${
+                order.shipping_address.last_name || ''
+              }\n` +
+              `${order.shipping_address.address1 || ''}\n` +
+              `${order.shipping_address.address2 || ''}\n` +
+              `${order.shipping_address.city || ''}\n` +
+              `${order.shipping_address.zip || ''}`
+            }
+            jobId={order.confirmation_number}
+            orderId={'ORDER #' + order.order_number.toString()}
+            orderDate={'ORDER ' + order.created_at.split('T')[0]}
+            dispatchDate={'DISPATCH ' + todayDate}
+            deliveryDate={' '}
+            note={'DELIVERY NOTE:'}
+            itemName={order.line_items[0].name}
+            gs1={order.confirmation_number}
+            code={order.confirmation_number}
+          />
+        )}
       </CardFooter>
     </Card>
   )

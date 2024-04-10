@@ -24,7 +24,7 @@ const ClientDialog: React.FC<ClientDialogProps> = ({ name, url, uid, clientId })
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant='outline'>Activate</Button>
+        <Button variant='outline'>Install Webhook</Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[650px]'>
         <DialogHeader>
@@ -41,7 +41,7 @@ const ClientDialog: React.FC<ClientDialogProps> = ({ name, url, uid, clientId })
             id='url'
             className='mt-1'
             readOnly
-            value={`${siteconfig.hostUrl}api/orderhook?${clientId}`}
+            value={`${siteconfig.hostUrl}api/orderhook?uid=${uid}?client_id=${clientId}`}
           />
         </div>
         <div className='mt-4'>
@@ -60,7 +60,9 @@ const ClientDialog: React.FC<ClientDialogProps> = ({ name, url, uid, clientId })
           <br />
           Event: Order Creation <br />
           Format: JSON <br />
-          URL: {`${siteconfig.hostUrl}api/orderhook?${clientId}`} <br />
+          URL:{' '}
+          {`${siteconfig.hostUrl}api/orderhook?uid=${uid}?client_id=${clientId}`}{' '}
+          <br />
           API Version: 2024-04
         </DialogDescription>
       </DialogContent>

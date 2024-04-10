@@ -39,6 +39,22 @@ const AddressSchema = new Schema({
     province_code: String
 });
 
+const emailMarketingConsentSchema = new Schema({
+    state: {
+      type: String,
+      enum: ['subscribed', 'not_subscribed'], // Assuming these are your only two states
+      required: true,
+    },
+    opt_in_level: {
+      type: String,
+      enum: ['single_opt_in', 'double_opt_in'], // Add any other levels you may have
+      required: true,
+    },
+    consent_updated_at: {
+      type: Date, // Or String, depending on how you store dates
+      default: null,
+    },
+  });
 const CustomerSchema = new Schema({
     id: Number,
     email: String,
@@ -52,7 +68,7 @@ const CustomerSchema = new Schema({
     multipass_identifier: String,
     tax_exempt: Boolean,
     phone: String,
-    email_marketing_consent: String,
+    email_marketing_consent: emailMarketingConsentSchema,
     sms_marketing_consent: String,
     tags: String,
     currency: String,
@@ -60,6 +76,8 @@ const CustomerSchema = new Schema({
     admin_graphql_api_id: String,
     default_address: AddressSchema
 });
+
+
 
 const LineItemSchema = new Schema({
     id: Number,
@@ -96,6 +114,8 @@ const LineItemSchema = new Schema({
  const OrderSchema = new Schema({
     id: Number,
     storeName: { type: String, required: true },
+    uid: { type: String, required: true },
+    clientId: { type: String, required: true },
     admin_graphql_api_id: String,
     app_id: Number,
     browser_ip: String,
