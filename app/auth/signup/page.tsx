@@ -29,13 +29,13 @@ export default function SignUpForm() {
 
   const router = useRouter()
 
-  const handleSignUp = async (event) => {
+  const handleSignUp = async (event: any) => {
     event.preventDefault()
     try {
       await createUserWithEmailAndPassword(auth, email, password)
       console.log('Account created successfully!')
       router.push('/')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to create an account:', error.message)
     }
   }
@@ -46,7 +46,7 @@ export default function SignUpForm() {
       await signInWithPopup(auth, provider)
       console.log('Signed up with Google!')
       router.push('/')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to sign up with Google:', error.message)
     }
   }

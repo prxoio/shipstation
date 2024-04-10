@@ -26,13 +26,13 @@ export default function LoginForm() {
   const [password, setPassword] = useState('')
   const router = useRouter()
 
-  const handleLogin = async (event) => {
+  const handleLogin = async (event: any) => {
     event.preventDefault()
     try {
       await signInWithEmailAndPassword(auth, email, password)
       console.log('Logged in successfully!')
       router.push('/')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to login:', error.message)
     }
   }
@@ -43,7 +43,7 @@ export default function LoginForm() {
       await signInWithPopup(auth, provider)
       console.log('Logged in with Google!')
       router.push('/')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to login with Google:', error.message)
     }
   }
