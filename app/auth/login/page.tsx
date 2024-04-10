@@ -24,19 +24,16 @@ import { useRouter } from 'next/navigation'
 export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const router = useRouter(); // Use the useRouter hook
+  const router = useRouter()
 
   const handleLogin = async (event) => {
-    event.preventDefault() // Prevent the default form submit action
+    event.preventDefault()
     try {
       await signInWithEmailAndPassword(auth, email, password)
       console.log('Logged in successfully!')
-      router.push('/'); // Redirect to the home page
-
-      // Navigate to dashboard or home page here if needed
+      router.push('/')
     } catch (error) {
       console.error('Failed to login:', error.message)
-      // Show error message to the user
     }
   }
 
@@ -45,11 +42,9 @@ export default function LoginForm() {
     try {
       await signInWithPopup(auth, provider)
       console.log('Logged in with Google!')
-      router.push('/'); // Redirect to the home page
-      // Navigate to dashboard or home page here if needed
+      router.push('/')
     } catch (error) {
       console.error('Failed to login with Google:', error.message)
-      // Show error message to the user
     }
   }
 

@@ -38,57 +38,55 @@ import { SwitchForm } from '@/components/catch-all'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth } from '@/lib/firebase'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 export default function NewClient() {
   const [businessName, setBusinessName] = useState('')
   const [url, setUrl] = useState('')
-  const [uid, setUid] = useState(''); // State to hold the Firebase UID
+  const [uid, setUid] = useState('')
 
   const router = useRouter()
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        setUid(user.uid);
+        setUid(user.uid)
       } else {
-        // Redirect or inform the user they are not logged in
-        console.log('No authenticated user. Redirecting...');
-        router.push('/login'); // Adjust the path as necessary
+        console.log('No authenticated user. Redirecting...')
+        router.push('/login')
       }
-    });
-  
-    // Clean up the listener on component unmount
-    return () => unsubscribe();
-  }, [router]);
+    })
+
+    return () => unsubscribe()
+  }, [router])
 
   const handleSubmit = async (event: any) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    const clientId = uuidv4(); // uuid for the client (to use in webhook query)
+    const clientId = uuidv4()
 
     const formData = {
-      uid, // Include the UID in the form data
+      uid,
       clientId,
       businessName,
       url,
-    };
+    }
 
     try {
-      const response = await fetch('/api/clients/add', { // Updated to use the new API route
+      const response = await fetch('/api/clients/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
-      });
+      })
 
       if (response.ok) {
-        router.push('/clients') // Redirect or handle success
+        router.push('/clients')
       } else {
-        const errorDetails = await response.text(); // or response.json() if the server responds with JSON
-        console.error('Form submission error:', errorDetails);
-        throw new Error(`Form submission failed: ${errorDetails}`);
+        const errorDetails = await response.text()
+        console.error('Form submission error:', errorDetails)
+        throw new Error(`Form submission failed: ${errorDetails}`)
       }
     } catch (error) {
       console.error(error)

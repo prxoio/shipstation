@@ -1,4 +1,3 @@
-// pages/api/data.ts
 import dbConnect from '@/lib/mongodb'
 import mongoose, { Document, Model } from 'mongoose'
 import type { NextApiRequest, NextApiResponse } from 'next'

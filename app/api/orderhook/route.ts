@@ -1,6 +1,5 @@
-// pages/api/webhook.ts
 import dbConnect from '@/lib/mongodb'
-import { Order } from '@/lib/mongoose/order-schema' // Correct import of the compiled model
+import { Order } from '@/lib/mongoose/order-schema'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
@@ -12,20 +11,16 @@ export async function POST(request: NextRequest) {
     const uid = requestUrl.searchParams.get('uid')
     const clientId = requestUrl.searchParams.get('client_id')
 
-    const url = new URL(data.order_status_url);
-    const storeName = url.hostname.split('.')[0]; // Extract 'manufi'
+    const url = new URL(data.order_status_url)
+    const storeName = url.hostname.split('.')[0]
 
     if (!storeName) {
-      // Return an error response if storeName (id) is not provided
-      return new NextResponse(
-        JSON.stringify({ error: 'user (uid) is required' }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
+      return new NextResponse(JSON.stringify({ error: 'user (uid) is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      })
     }
-    // Create new document with storeName and order data
+
     const newOrder = new Order({
       ...data,
       storeName,

@@ -15,13 +15,11 @@ export default function Dashboard() {
 
   const handleOrdersFetched = useCallback((order: IOrder) => {
     setCurrentOrder(order)
-    // Handle the fetched orders here
     console.log('Orders in parent component:', order)
   }, [])
 
   const handleOrdersArray = useCallback((orders: IOrder[]) => {
     setAllOrders(orders)
-    // Handle the fetched orders here
     console.log('Orders in parent component:', orders)
   }, [])
 

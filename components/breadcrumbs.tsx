@@ -16,16 +16,13 @@ import React from 'react'
 
 export default function Breadcrumbs() {
   const pathname = usePathname()
-  // Split the pathname into segments and filter out empty segments (due to leading/trailing slashes)
+
   const segments = pathname.split('/').filter(Boolean)
 
-  // Optional: Map segments to user-friendly names or handle special cases
   const breadcrumbSegments = segments.map((segment, index) => {
-    // Here, you can implement logic to convert segments into more readable strings
-    // For example, converting 'user-profile' to 'User Profile', or fetching a title from a map
-    const title = segment.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()) // Simple conversion: dashes to spaces, capitalize
+    const title = segment.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
 
-    const href = '/' + segments.slice(0, index + 1).join('/') // Reconstruct the href for the current segment
+    const href = '/' + segments.slice(0, index + 1).join('/')
 
     return { title, href }
   })

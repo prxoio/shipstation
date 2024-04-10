@@ -43,42 +43,35 @@ export default function OrderTable({
   onOrdersArray,
 }: OrderTableProps) {
   const [orders, setOrders] = useState<IOrder[]>([])
-  const storeName = 'manufi' // Specify the store name
-  const pollingInterval = 5000 // Poll every 5000 milliseconds (5 seconds)
+  const storeName = 'manufi'
+  const pollingInterval = 5000
   const uid = auth?.currentUser?.uid || 'unknown'
 
   useEffect(() => {
-    // Define the fetch operation as an async function
     const fetchOrders = async () => {
       try {
         const response = await fetch(`/api/orders?uid=${uid}`)
         if (response.ok) {
           const data = await response.json()
-          setOrders(data) // Update the orders state
+          setOrders(data)
           onOrdersArray(data)
           console.log('Fetched orders:', data)
         } else {
-          // Handle HTTP errors
           console.error('Failed to fetch orders:', response.statusText)
         }
       } catch (error) {
-        // Handle fetch errors
         console.error('Error fetching orders:', error)
       }
     }
 
-    // Immediately invoke the fetch operation when the component mounts
     fetchOrders()
 
-    // Set up polling using setInterval
     const intervalId = setInterval(fetchOrders, pollingInterval)
 
-    // Clean up the interval on component unmount
     return () => clearInterval(intervalId)
-  }, [uid]) // Include onOrdersFetched in the dependency array
+  }, [uid])
 
   const handleRowClick = (order: IOrder) => {
-    // Call the prop function with the selected order
     onOrdersFetched(order)
   }
 

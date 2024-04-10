@@ -27,28 +27,26 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 import { ModeToggle } from '@/components/ui/darkmode'
 import Breadcrumbs from './breadcrumbs'
-import { useAuth } from '@/hooks/useAuth';
-import { signOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { useAuth } from '@/hooks/useAuth'
+import { signOut } from 'firebase/auth'
+import { auth } from '@/lib/firebase'
 
 export default function Header() {
-  const { isLoggedIn, userEmail } = useAuth();
-
+  const { isLoggedIn, userEmail } = useAuth()
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      console.log('User logged out successfully');
-      // Optionally, redirect the user after logging out or reset app state
+      await signOut(auth)
+      console.log('User logged out successfully')
     } catch (error) {
-      console.error('Logout failed', error);
+      console.error('Logout failed', error)
     }
-  };
+  }
 
   if (!isLoggedIn) {
-    return null;
+    return null
   }
-  
+
   return (
     <header className='sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6'>
       <Sheet>

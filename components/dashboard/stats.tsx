@@ -24,11 +24,10 @@ export default function OrderStats({ orders }: OrderStatsProps) {
     const filteredOrders = orders.filter((order) => {
       const orderDate = new Date(order.created_at).getTime()
       const timeDiff = currentDate - orderDate
-      const daysAgo = timeDiff / (1000 * 60 * 60 * 24) // Convert milliseconds to days
+      const daysAgo = timeDiff / (1000 * 60 * 60 * 24)
       return daysAgo <= days
     })
 
-    // Calculate total amount
     const totalAmount = filteredOrders.reduce(
       (sum, order) => sum + parseFloat(order.total_price_set.shop_money.amount),
       0
@@ -46,30 +45,25 @@ export default function OrderStats({ orders }: OrderStatsProps) {
   function calculateAndFormatAverageOrderValue(orders: any[], days: number) {
     const currentDate = new Date().getTime()
 
-    // Filter orders to those within the last N days
     const filteredOrders = orders.filter(
       (order: { created_at: string | number | Date }) => {
         const orderDate = new Date(order.created_at).getTime()
         const timeDiff = currentDate - orderDate
-        const daysAgo = timeDiff / (1000 * 60 * 60 * 24) // Convert milliseconds to days
+        const daysAgo = timeDiff / (1000 * 60 * 60 * 24)
         return daysAgo <= days
       }
     )
 
-    // Calculate total amount
     const totalAmount = filteredOrders.reduce(
       (sum, order) => sum + parseFloat(order.total_price_set.shop_money.amount),
       0
     )
 
-    // Calculate average order value
     const averageOrderValue =
       filteredOrders.length > 0 ? totalAmount / filteredOrders.length : 0
 
-    // Assuming all orders are in the same currency for simplicity
     const currencyCode = orders[0]?.currency ?? 'USD'
 
-    // Format average order value with currency
     const formattedAverageOrderValue = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currencyCode,
@@ -84,7 +78,7 @@ export default function OrderStats({ orders }: OrderStatsProps) {
         <CardHeader className='pb-3'>
           <CardTitle>Your Orders</CardTitle>
           <CardDescription className='max-w-lg text-balance leading-relaxed'>
-            Introducing Your New Dynamic Orders Dashboard.
+            Welcome To Your Central Shipping Dashboard.
           </CardDescription>
         </CardHeader>
         <CardFooter className='pt-4'>
@@ -96,7 +90,7 @@ export default function OrderStats({ orders }: OrderStatsProps) {
           <CardHeader className='py-5'>
             {' '}
             <CardTitle className='text-md'>Total Orders</CardTitle>
-            <Tabs defaultValue='7d' className='w-[100%]'>
+            <Tabs defaultValue='1m' className='w-[100%]'>
               <TabsContent value='7d'>
                 {orders[0] && (
                   <CardTitle className='text-3xl pt-0'>
@@ -154,7 +148,7 @@ export default function OrderStats({ orders }: OrderStatsProps) {
           <CardHeader className='py-5'>
             {' '}
             <CardTitle className='text-md'>Average Order Value</CardTitle>
-            <Tabs defaultValue='7d' className='w-[100%]'>
+            <Tabs defaultValue='1y' className='w-[100%]'>
               <TabsContent value='7d'>
                 {orders[0] && (
                   <CardTitle className='text-3xl pt-0'>

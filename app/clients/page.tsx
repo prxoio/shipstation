@@ -48,13 +48,13 @@ export default function Dashboard() {
 
   const handleOrdersFetched = useCallback((order: IOrder) => {
     setCurrentOrder(order)
-    // Handle the fetched orders here
+
     console.log('Orders in parent component:', order)
   }, [])
 
   const [refresh, setRefresh] = useState(0)
   const [clients, setClients] = useState<Clients[] | null>(null)
-  const uid = auth.currentUser?.uid // Get the current user's UID
+  const uid = auth.currentUser?.uid
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -64,15 +64,14 @@ export default function Dashboard() {
           throw new Error('Failed to fetch clients')
         }
         const data = await response.json()
-        setClients(data) // Update state with fetched clients
+        setClients(data)
       } catch (error: any) {
         console.error(error.message)
-        // Optionally, handle errors in state/UI as needed
       }
     }
 
     fetchClients()
-  }, [uid, refresh]) // Dependency array ensures this effect runs when `uid` changes
+  }, [uid, refresh])
 
   const deleteClient = async (
     uid: string | number | boolean,
@@ -90,10 +89,8 @@ export default function Dashboard() {
       const data = await response.json()
       console.log(data)
       setRefresh((prev) => prev + 1)
-      // Handle response data...
     } catch (error) {
       console.error('Failed to delete client:', error)
-      // Handle error...
     }
   }
 
