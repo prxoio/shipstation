@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Shopify Notifications and Shipping Label Web App
 
-## Getting Started
+This web application allows users to manage notifications from multiple Shopify stores and generate shipping labels from a centralised location using the pdfme library. The application uses MongoDB for data storage and Firebase for authentication.
 
-First, run the development server:
+[Read the Blog Post - ShipStation](https://www.inv3nt.dev/blog/shipstation)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Centralised Notifications**: Subscribe to and manage notifications from multiple Shopify stores.
+- **PDF Shipping Labels**: Generate and download shipping labels in PDF format.
+- **Secure Authentication**: Firebase authentication for user management.
+- **Database Integration**: MongoDB for storing user, client, and order data.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### `/api/clients`
+- `GET /api/clients/get`: Retrieves a list of clients associated with a user.
+- `POST /api/clients/add`: Adds a new client to the user's account.
+- `DELETE /api/clients/delete`: Deletes a specified client based on the provided UID and URL.
 
-## Learn More
+### `/api/orders`
+- `GET /api/orders`: Fetches all orders associated with a specific user.
 
-To learn more about Next.js, take a look at the following resources:
+### `/api/orderhook`
+- `POST /api/orderhook`: Handles incoming webhook data from Shopify, storing order details.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/prxoio/shipstation.git
+   cd shipstation
+   ```
 
-## Deploy on Vercel
+2. **Install Dependencies**
+   ```bash
+   pnpm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Environment Configuration**
+   Set up your `.env` file with the necessary configurations for Firebase, MongoDB, and other services.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+4. **Run the Application**
+   ```bash
+   pnpm start
+   ```
+
+## Technologies Used
+
+- **Frontend**: React, Next.js
+- **Backend**: Node.js, Express
+- **Database**: MongoDB
+- **Authentication**: Firebase
+- **PDF Generation**: pdfme
+
+## Contributing
+
+Contributions are welcome.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
