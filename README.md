@@ -4,6 +4,10 @@ This web application allows users to manage notifications from multiple Shopify 
 
 [Read the Blog Post - ShipStation](https://www.inv3nt.dev/blog/shipstation)
 
+To view the example application, use the following credentials:
+[test@example.com]
+[password]
+
 ## Features
 
 - **Centralised Notifications**: Subscribe to and manage notifications from multiple Shopify stores.
