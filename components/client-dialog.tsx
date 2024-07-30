@@ -3,14 +3,12 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { HiOutlineClipboardDocumentCheck } from 'react-icons/hi2'
 import siteconfig from '@/siteconfig.json'
 
 interface ClientDialogProps {
@@ -50,7 +48,7 @@ const ClientDialog: React.FC<ClientDialogProps> = ({ name, url, uid, clientId })
             id='url'
             className='mt-1'
             readOnly
-            value={`https://${url}/store/manufi/settings/notifications/webhooks`}
+            value={`https://${url}/store/${name}/settings/notifications/webhooks`}
           />
         </div>
         <DialogDescription>

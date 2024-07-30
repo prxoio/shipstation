@@ -30,9 +30,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useCallback, useEffect, useState } from 'react'
-import { IOrder } from '@/interfaces/IOrder'
-import { EditClient } from '@/components/dashboard/edit-client'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { auth } from '@/lib/firebase'
 import ClientDialog from '@/components/client-dialog'
@@ -44,14 +42,6 @@ interface Clients {
   clientId: string
 }
 export default function Dashboard() {
-  const [currentOrder, setCurrentOrder] = useState<IOrder | null>(null)
-
-  const handleOrdersFetched = useCallback((order: IOrder) => {
-    setCurrentOrder(order)
-
-    console.log('Orders in parent component:', order)
-  }, [])
-
   const [refresh, setRefresh] = useState(0)
   const [clients, setClients] = useState<Clients[] | null>(null)
   const uid = auth.currentUser?.uid
@@ -66,7 +56,7 @@ export default function Dashboard() {
         const data = await response.json()
         setClients(data)
       } catch (error: any) {
-        console.error(error.message)
+        console.log(error.message)
       }
     }
 
@@ -90,7 +80,7 @@ export default function Dashboard() {
       console.log(data)
       setRefresh((prev) => prev + 1)
     } catch (error) {
-      console.error('Failed to delete client:', error)
+      console.log('Failed to delete client:', error)
     }
   }
 
@@ -121,12 +111,6 @@ export default function Dashboard() {
                 <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button size='sm' variant='outline' className='h-8 gap-1'>
-              <File className='h-3.5 w-3.5' />
-              <span className='sr-only sm:not-sr-only sm:whitespace-nowrap'>
-                Export
-              </span>
-            </Button>
             <Button size='sm' className='h-8 gap-1'>
               <PlusCircle className='h-3.5 w-3.5' />
               <Link href='/clients/new-client'>
@@ -227,7 +211,8 @@ export default function Dashboard() {
             </CardContent>
             <CardFooter>
               <div className='text-xs text-muted-foreground'>
-                Showing <strong>x</strong> of <strong>x</strong> clients
+                Showing <strong>{clients?.length}</strong>{' '}
+                {clients?.length === 1 ? 'client' : 'clients'}
               </div>
             </CardFooter>
           </Card>

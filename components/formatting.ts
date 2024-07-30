@@ -1,7 +1,7 @@
 function reformatDate(dateString: string | number | Date) {
   const date = new Date(dateString)
   const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0') // Months are 0-based, add 1 to get correct month
+  const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
 
   return `${year}-${month}-${day}`
@@ -20,8 +20,8 @@ function formatCurrency(amountString: string, currencyCode: any) {
   return new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: currencyCode,
-    minimumFractionDigits: 0, // Optional: adjust as needed
-    maximumFractionDigits: 0, // Optional: adjust as needed
+    minimumFractionDigits: 0, 
+    maximumFractionDigits: 0, 
   }).format(amount)
 }
 

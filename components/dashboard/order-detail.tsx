@@ -1,11 +1,4 @@
-import {
-  ChevronLeft,
-  ChevronRight,
-  Copy,
-  CreditCard,
-  MoreVertical,
-  Truck,
-} from 'lucide-react'
+import { Copy, CreditCard, MoreVertical, Truck } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -23,11 +16,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-} from '@/components/ui/pagination'
 import { Separator } from '@/components/ui/separator'
 import { IOrder } from '@/interfaces/IOrder'
 import { formatCurrency, reformatDate } from '@/components/formatting'
@@ -135,7 +123,6 @@ export default function OrderDetail({ order }: OrderDetailProps) {
                     order?.total_tax_set.shop_money.amount as string,
                     order?.total_tax_set.shop_money.currency_code
                   ) || 'null'}
-                  0
                 </span>
               </li>
               <li className='flex items-center justify-between font-semibold'>

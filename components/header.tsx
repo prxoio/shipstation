@@ -6,10 +6,8 @@ import {
   LineChart,
   Package,
   Package2,
-  PanelLeft,
-  Search,
-  ShoppingCart,
-  Users2,
+  PanelLeft, ShoppingCart,
+  Users2
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -21,7 +19,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
 
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
@@ -39,7 +36,7 @@ export default function Header() {
       await signOut(auth)
       console.log('User logged out successfully')
     } catch (error) {
-      console.error('Logout failed', error)
+      console.log('Logout failed', error)
     }
   }
 
@@ -104,14 +101,7 @@ export default function Header() {
         </SheetContent>
       </Sheet>
       <Breadcrumbs />
-      <div className='relative ml-auto flex-1 md:grow-0'>
-        <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
-        <Input
-          type='search'
-          placeholder='Search...'
-          className='w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]'
-        />
-      </div>
+      <div className='relative ml-auto flex-1 md:grow-0'></div>
       <ModeToggle />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -133,9 +123,6 @@ export default function Header() {
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuLabel>{userEmail}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onSelect={handleLogout}>Logout</DropdownMenuItem>
         </DropdownMenuContent>

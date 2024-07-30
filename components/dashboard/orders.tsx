@@ -1,9 +1,6 @@
 'use client'
 
-import { File, ListFilter } from 'lucide-react'
-
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -12,14 +9,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import {
   Table,
   TableBody,
   TableCell,
@@ -27,10 +16,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { useState, useEffect } from 'react'
 import { IOrder } from '@/interfaces/IOrder'
-import { reformatDate, reformatTime, formatCurrency } from '@/components/formatting'
+import { reformatDate, formatCurrency } from '@/components/formatting'
 import { auth } from '@/lib/firebase'
 
 interface OrderTableProps {
@@ -57,10 +46,10 @@ export default function OrderTable({
           onOrdersArray(data)
           console.log('Fetched orders:', data)
         } else {
-          console.error('Failed to fetch orders:', response.statusText)
+          console.log('Failed to fetch orders:', response.statusText)
         }
       } catch (error) {
-        console.error('Error fetching orders:', error)
+        console.log('Error fetching orders:', error)
       }
     }
 
@@ -77,34 +66,6 @@ export default function OrderTable({
 
   return (
     <Tabs defaultValue='week'>
-      <div className='flex items-center'>
-        <TabsList>
-          <TabsTrigger value='week'>Week</TabsTrigger>
-          <TabsTrigger value='month'>Month</TabsTrigger>
-          <TabsTrigger value='year'>Year</TabsTrigger>
-        </TabsList>
-        <div className='ml-auto flex items-center gap-2'>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant='outline' size='sm' className='h-7 gap-1 text-sm'>
-                <ListFilter className='h-3.5 w-3.5' />
-                <span className='sr-only sm:not-sr-only'>Filter</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-              <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuCheckboxItem checked>Fulfilled</DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem>Declined</DropdownMenuCheckboxItem>
-              <DropdownMenuCheckboxItem>Refunded</DropdownMenuCheckboxItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Button size='sm' variant='outline' className='h-7 gap-1 text-sm'>
-            <File className='h-3.5 w-3.5' />
-            <span className='sr-only sm:not-sr-only'>Export</span>
-          </Button>
-        </div>
-      </div>
       <TabsContent value='week'>
         <Card>
           <CardHeader className='px-7'>
@@ -127,12 +88,17 @@ export default function OrderTable({
                   orders.map((order) => (
                     <TableRow key={order.id} onClick={() => handleRowClick(order)}>
                       <TableCell>
-                        <div className='font-medium'>
+                        <span className='font-medium'>
                           {order.customer.first_name || 'No Name'}
-                        </div>
-                        <div className='hidden text-sm text-muted-foreground md:inline'>
+                        </span>
+                        <span> </span>{' '}
+                        <span className='font-medium'>
+                          {order.customer.last_name || 'No Name'}
+                        </span>
+                        <span> </span>{' '}
+                        <span className='hidden text-sm text-muted-foreground md:inline'>
                           {order.customer.email || 'No email'}
-                        </div>
+                        </span>
                       </TableCell>
                       <TableCell className='hidden sm:table-cell'>Sale</TableCell>
                       <TableCell className='hidden sm:table-cell'>
@@ -150,7 +116,7 @@ export default function OrderTable({
                         ) || 'null'}
                       </TableCell>
                     </TableRow>
-                  ))}{' '}
+                  ))}
               </TableBody>
             </Table>
           </CardContent>

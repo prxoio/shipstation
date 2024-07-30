@@ -12,6 +12,7 @@ import { IOrder } from '@/interfaces/IOrder'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Label } from '../ui/label'
+import Link from 'next/link'
 
 interface OrderStatsProps {
   orders: IOrder[]
@@ -82,7 +83,9 @@ export default function OrderStats({ orders }: OrderStatsProps) {
           </CardDescription>
         </CardHeader>
         <CardFooter className='pt-4'>
-          <Button>Create New Order</Button>
+          <Link href='/clients' passHref>
+            <Button>Add New Client</Button>
+          </Link>
         </CardFooter>
       </Card>
       {orders[0] ? (
@@ -99,7 +102,7 @@ export default function OrderStats({ orders }: OrderStatsProps) {
                 )}{' '}
                 <CardDescription className='pt-0.5'>
                   {' '}
-                  <div className='text-xs text-muted-foreground'>Last 7 Days</div>
+                  <span className='text-xs text-muted-foreground'>Last 7 Days</span>
                 </CardDescription>
               </TabsContent>
               <TabsContent value='1m'>
@@ -111,7 +114,7 @@ export default function OrderStats({ orders }: OrderStatsProps) {
                 )}{' '}
                 <CardDescription className='pt-0.5'>
                   {' '}
-                  <div className='text-xs text-muted-foreground'>Last 30 Days</div>
+                  <span className='text-xs text-muted-foreground'>Last 30 Days</span>
                 </CardDescription>
               </TabsContent>
               <TabsContent value='1y'>
@@ -123,7 +126,9 @@ export default function OrderStats({ orders }: OrderStatsProps) {
                 )}{' '}
                 <CardDescription className='pt-0.5'>
                   {' '}
-                  <div className='text-xs text-muted-foreground'>Last 365 Days</div>
+                  <span className='text-xs text-muted-foreground'>
+                    Last 365 Days
+                  </span>
                 </CardDescription>
               </TabsContent>
               <TabsList className='grid w-[100%] grid-cols-3 h-8 mt-2 mb-0'>
@@ -158,7 +163,7 @@ export default function OrderStats({ orders }: OrderStatsProps) {
                 )}{' '}
                 <CardDescription className='pt-0.5'>
                   {' '}
-                  <div className='text-xs text-muted-foreground'>Last 7 Days</div>
+                  <span className='text-xs text-muted-foreground'>Last 7 Days</span>
                 </CardDescription>
               </TabsContent>
               <TabsContent value='1m'>
@@ -171,7 +176,7 @@ export default function OrderStats({ orders }: OrderStatsProps) {
                 )}{' '}
                 <CardDescription className='pt-0.5'>
                   {' '}
-                  <div className='text-xs text-muted-foreground'>Last 30 Days</div>
+                  <span className='text-xs text-muted-foreground'>Last 30 Days</span>
                 </CardDescription>
               </TabsContent>
               <TabsContent value='1y'>
@@ -184,7 +189,9 @@ export default function OrderStats({ orders }: OrderStatsProps) {
                 )}{' '}
                 <CardDescription className='pt-0.5'>
                   {' '}
-                  <div className='text-xs text-muted-foreground'>Last 365 Days</div>
+                  <span className='text-xs text-muted-foreground'>
+                    Last 365 Days
+                  </span>
                 </CardDescription>
               </TabsContent>
               <TabsList className='grid w-[100%] grid-cols-3 h-8 mt-2 mb-0'>
