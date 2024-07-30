@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import Sidebar from '@/components/sidebar'
 import Header from '@/components/header'
+import Footer from '@/components/footer' // Import the Footer component
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -23,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en'>
+    <html lang="en">
       <body
         className={cn(
           'min-h-screen bg-background font-sans antialiased',
@@ -31,23 +32,34 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
+          attribute="class"
+          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <div className='flex min-h-screen w-full flex-col bg-muted/40'>
+          <div className="flex min-h-screen flex-col bg-muted/40">
+            <TooltipProvider>
+              <div className="flex flex-1">
+                <Sidebar />
+                <div className="flex flex-col w-full sm:gap-4 sm:py-4 sm:pl-14 flex-1">
+                  <Header />
+                  <main className="flex-1">{children}</main>
+                </div>
+              </div>
+
+{/*               <div className='flex min-h-screen w-full flex-col bg-muted/40'>
             <TooltipProvider>
               <Sidebar />
               <div className='flex flex-col sm:gap-4 sm:py-4 sm:pl-14'>
                 <Header />
 
                 {children}
-              </div>
+              </div> */}
             </TooltipProvider>
+            <Footer />
           </div>
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
