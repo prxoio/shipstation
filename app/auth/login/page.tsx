@@ -65,7 +65,7 @@ export default function LoginForm() {
             <Input
               id='email'
               type='email'
-              placeholder='m@example.com'
+              placeholder='email@example.com'
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -74,9 +74,9 @@ export default function LoginForm() {
           <div className='grid gap-2'>
             <div className='flex items-center'>
               <Label htmlFor='password'>Password</Label>
-              <Link href='#' className='ml-auto inline-block text-sm underline'>
+              {/*   <Link href='#' className='ml-auto inline-block text-sm underline'>
                 Forgot your password?
-              </Link>
+              </Link> */}
             </div>
             <Input
               id='password'
@@ -90,7 +90,11 @@ export default function LoginForm() {
             Login
           </Button>
         </form>
-        <Button variant='outline' className='w-full' onClick={handleGoogleLogin}>
+        <Button
+          variant='outline'
+          className='w-full mt-3'
+          onClick={handleGoogleLogin}
+        >
           Login with Google
         </Button>
         <div className='mt-4 text-center text-sm'>

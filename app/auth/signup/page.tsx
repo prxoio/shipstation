@@ -109,7 +109,7 @@ export default function SignUpForm() {
             Create an account
           </Button>
         </form>
-        <Button variant='outline' className='w-full' onClick={handleGoogleLogin}>
+        <Button variant='outline' className='w-full mt-3' onClick={handleGoogleLogin}>
           Sign up with Google
         </Button>
         <div className='mt-4 text-center text-sm'>
